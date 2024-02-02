@@ -29,5 +29,4 @@ Much love
 
 - KEYS
 
-
-DISCORD: https://discord.gg/4AF4EjdhSx
+---- UPDATES COMING SOON - PROJECT ALMOST DOME :')
