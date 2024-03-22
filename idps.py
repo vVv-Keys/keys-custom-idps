@@ -1,6 +1,7 @@
 from scapy.all import *
 import re
 import random
+import threading
 
 # Sample botnet signatures (regular expressions)
 botnet_signatures = [
@@ -8,6 +9,19 @@ botnet_signatures = [
     r'malware\.exe',
     # Add more signatures as needed
 ]
+
+class RealTimeAnalyzer(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+
+    def run(self):
+        sniff(prn=self.analyze_packet, store=0)
+
+    def analyze_packet(self, packet):
+        """Analyze network packets in real-time"""
+        if detect_botnet_traffic(packet):
+            print("Detected Botnet Traffic:")
+            print(packet.show())  # Print details of the detected botnet packet
 
 def detect_botnet_traffic(packet):
     """Detect botnet traffic based on signatures"""
@@ -29,18 +43,12 @@ def generate_network_traffic(num_packets):
         traffic.append(packet)  # Add the generated packet to the traffic list
     return traffic  # Return the list of generated traffic packets
 
-def test_botnet_detection(packet):
-    """Test the botnet detection mechanism"""
-    if detect_botnet_traffic(packet):
-        print("Detected Botnet Traffic:")
-        print(packet.show())  # Print the details of the detected botnet packet
-
 # Test with 10 random network packets
 test_traffic = generate_network_traffic(10)
 print("Generated Network Traffic:")
 for packet in test_traffic:
     print(packet)
 
-# Sniff network traffic and test botnet detection for each packet
-print("\nDetecting Botnet Traffic:")
-sniff(prn=test_botnet_detection, store=0)
+# Start real-time analysis in a separate thread
+analyzer_thread = RealTimeAnalyzer()
+analyzer_thread.start()
