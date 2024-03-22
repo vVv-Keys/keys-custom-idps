@@ -1,32 +1,31 @@
-### keys-idps
+# Botnet Detection System
 
-``Personal Intrusion Detection Botnet Mitigation Program``
+## Overview
+This Python script provides a simple botnet detection system that analyzes network traffic to identify potential botnet activity. It includes both a signature-based detection mechanism and the ability to generate random network traffic for testing purposes.
 
+## Features
+- Signature-based detection: Detects botnet traffic based on predefined signatures.
+- Protocol analysis: Focuses on TCP packets to improve efficiency and accuracy.
+- Random traffic generation: Generates random network traffic for testing the detection mechanism.
+- Sniffing network traffic: Captures and analyzes network packets using Scapy.
 
-I am working on a multitude of scripts across different programs to innovate cyber security advancements, learning, education, and knowledge for people everywhere.
+## Dependencies
+- Python 3.x
+- Scapy
 
-All my projects that are involved in this will get added to my pins on my profile. 
+## Usage
+1. Ensure Python 3.x and Scapy are installed on your system.
+2. Run the script `botnet_detection.py`.
+3. View the output to see if any botnet activity is detected.
 
-THIS project will remain a .readme until a full project realese or until licensing is applied properly.
+## Configuration
+- You can modify the botnet signatures list in the script to include additional signatures as needed.
+- Adjust the number of packets generated for testing by changing the parameter in the `generate_network_traffic` function.
 
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## Acknowledgments
+- This script was created for educational purposes to demonstrate botnet detection techniques.
+- Special thanks to the Scapy development team for providing the powerful network packet manipulation capabilities.
 
-This project is to do exactly what it says, mitigate and detect botnet intrusions before they even come. THe inspiration behind this project is because I got attacked by meris botnet via linux(it was fine it was on my VM) but to ensure this can't happen again I wanted a personal botnet IDPS and upon searching I realized that all of them happen to just be NOTHING but DEMOS or sign-ups and we will contact you. Which that is great and all. BUT NOT WHEN MY PC IS GETTING JACKED BY RANSOMWARE.
-After mitigating the botnet away from my PC I decided to go a bit more out of my way to ensure all users know how to stay safe in the cyber world. 
-
-I was doing nothing when my pc got added to the bot net also, I wasn't even in the room when it happened. I came back to this 5 minutes after leaving my pc. I had no idea how this was happening but it was real. Then I realized I was using a scuffed LINUX kernal through VM and had instant signs of relief-ish.. 
-
-![image](https://github.com/Ceilo/keys-idps/assets/49612041/98d972c0-c49b-410c-94a3-b2d4045999ba)
-
-
-
-SO I will continue to work on mitigation tools for personal use and for discord bot integrations so stay tuned. 
-
-IF you would like to collaberate, sponsor, have any types of questions or need help or can maybe you can help me - alwys feel free to reach out. 
-
-
-Much love 
-
-- KEYS
-
----- UPDATES COMING SOON - PROJECT ALMOST DOME :')
