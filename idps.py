@@ -11,8 +11,9 @@ botnet_signatures = [
 ]
 
 class RealTimeAnalyzer(threading.Thread):
-    def __init__(self):
+    def __init__(self, log_file):
         threading.Thread.__init__(self)
+        self.log_file = log_file
 
     def run(self):
         sniff(prn=self.analyze_packet, store=0)
@@ -20,8 +21,13 @@ class RealTimeAnalyzer(threading.Thread):
     def analyze_packet(self, packet):
         """Analyze network packets in real-time"""
         if detect_botnet_traffic(packet):
-            print("Detected Botnet Traffic:")
-            print(packet.show())  # Print details of the detected botnet packet
+            self.log_detected_packet(packet)
+
+    def log_detected_packet(self, packet):
+        """Log detected botnet packet to file"""
+        with open(self.log_file, 'a') as f:
+            f.write("Detected Botnet Traffic:\n")
+            f.write(str(packet) + "\n\n")  # Write packet details to log file
 
 def detect_botnet_traffic(packet):
     """Detect botnet traffic based on signatures"""
@@ -49,6 +55,7 @@ print("Generated Network Traffic:")
 for packet in test_traffic:
     print(packet)
 
-# Start real-time analysis in a separate thread
-analyzer_thread = RealTimeAnalyzer()
+# Start real-time analysis in a separate thread and log detected botnet traffic
+log_file = "botnet_detection_log.txt"
+analyzer_thread = RealTimeAnalyzer(log_file)
 analyzer_thread.start()
