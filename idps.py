@@ -2,6 +2,9 @@ from scapy.all import *
 import re
 import random
 import threading
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 # Sample botnet signatures (regular expressions)
 botnet_signatures = [
@@ -22,12 +25,38 @@ class RealTimeAnalyzer(threading.Thread):
         """Analyze network packets in real-time"""
         if detect_botnet_traffic(packet):
             self.log_detected_packet(packet)
+            self.send_email_alert(packet)
 
     def log_detected_packet(self, packet):
         """Log detected botnet packet to file"""
         with open(self.log_file, 'a') as f:
             f.write("Detected Botnet Traffic:\n")
             f.write(str(packet) + "\n\n")  # Write packet details to log file
+
+    def send_email_alert(self, packet):
+        """Send email alert for detected botnet traffic"""
+        sender_email = "your_email@gmail.com"  # Sender's email address
+        receiver_email = "recipient_email@gmail.com"  # Receiver's email address
+        password = "your_password"  # Sender's email password
+
+        message = MIMEMultipart()
+        message['From'] = sender_email
+        message['To'] = receiver_email
+        message['Subject'] = "Botnet Traffic Detected"
+
+        body = "Botnet Traffic Detected:\n\n" + str(packet)
+        message.attach(MIMEText(body, 'plain'))
+
+        try:
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+            server.login(sender_email, password)
+            text = message.as_string()
+            server.sendmail(sender_email, receiver_email, text)
+            server.quit()
+            print("Email alert sent successfully!")
+        except Exception as e:
+            print("Error sending email alert:", e)
 
 def detect_botnet_traffic(packet):
     """Detect botnet traffic based on signatures"""
