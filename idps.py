@@ -9,7 +9,7 @@ from email.mime.text import MIMEText
 # Sample whitelist of trusted IP addresses
 whitelist = [
     '192.168.0.1',
-    '',
+    '10.0.0.1',
     # Add more trusted IP addresses as needed
 ]
 
@@ -81,7 +81,7 @@ def analyze_traffic(packet):
 
 def update_botnet_signatures():
     """Update botnet signatures dynamically"""
-    # Implement logic to fetch and update signatures from external source or database
+    # Placeholder logic to fetch and update signatures from an external source or database
     updated_signatures = [
         r'new_signature1\.com',
         r'new_signature2\.exe',
