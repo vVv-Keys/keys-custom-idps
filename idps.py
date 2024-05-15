@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 # Sample whitelist of trusted IP addresses
 whitelist = [
     '192.168.0.1',
-    '',
+    '10.0.0.1',
     # Add more trusted IP addresses as needed
 ]
 
@@ -20,7 +20,7 @@ class RealTimeAnalyzer(threading.Thread):
         self.log_file = log_file
         self.botnet_signatures = botnet_signatures
         self.traffic_profile = {}  # Initialize empty dictionary for traffic profiling
-        self.ip_reputation_service = {}  # Initialize empty dictionary for IP reputation service
+        self.ip_reputation_service = set()  # Initialize empty set for IP reputation service
         self.siem_integration = SIEMIntegration()  # Initialize SIEM integration
 
     def run(self):
