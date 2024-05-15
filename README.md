@@ -14,7 +14,8 @@
 ```
 # Botnet Detection System
 
-### THE MORE LOVE THIS PROJECT GETS THE BETTER I WILL MAKE IT. <--- If people are into this idea and concept please share/star. If I see enough results I will continue building and making it more complex and rich with security features such as LLM's etc. 
+### THE MORE LOVE THIS PROJECT GETS THE BETTER I WILL MAKE IT. <--- If people are into this idea and concept please share/star. If I see enough results I will continue pushing this into a truly rich and sophisticated python IDPS free for the world!
+### This project and most of my projects are all made/created out of ACTUAL educational purposes/research purposes, I hope you all enjoy! :D
 
 ## Overview
 This Python script provides a sophisticated botnet detection system that leverages signature-based detection, machine learning algorithms, behavioral analysis, and traffic profiling to identify potential botnet activity in real-time. It also includes advanced alerting capabilities and integration with IP reputation services and SIEM for enhanced threat detection and centralized monitoring.
