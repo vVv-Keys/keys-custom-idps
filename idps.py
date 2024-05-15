@@ -27,6 +27,7 @@ class RealTimeAnalyzer(threading.Thread):
         if detect_botnet_traffic(packet, self.botnet_signatures) and not in_whitelist(packet):
             self.log_detected_packet(packet)
             self.send_email_alert(packet)
+        analyze_behavior(packet)
 
     def log_detected_packet(self, packet):
         """Log detected botnet packet to file"""
@@ -88,6 +89,13 @@ def update_botnet_signatures():
         # Add more signatures
     ]
     return updated_signatures
+
+def analyze_behavior(packet):
+    """Analyze network behavior for suspicious patterns"""
+    # Implement behavioral analysis logic here
+    # For demonstration, let's randomly flag packets as suspicious
+    if random.random() < 0.05:  # 5% chance of flagging a packet as suspicious
+        print("Suspicious behavior detected:", packet.summary())
 
 # Start real-time analysis in a separate thread and log detected botnet traffic
 log_file = "botnet_detection_log.txt"
