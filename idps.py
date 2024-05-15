@@ -51,7 +51,7 @@ class RealTimeAnalyzer(threading.Thread):
         message['To'] = receiver_email
         message['Subject'] = "Botnet Traffic Detected"
 
-        body = "Botnet Traffic Detected:\n\n" + str(packet)
+        body = self.generate_alert_message(packet)
         message.attach(MIMEText(body, 'plain'))
 
         try:
@@ -64,6 +64,15 @@ class RealTimeAnalyzer(threading.Thread):
             print("Email alert sent successfully!")
         except Exception as e:
             print("Error sending email alert:", e)
+
+    def generate_alert_message(self, packet):
+        """Generate detailed alert message"""
+        # You can customize this message format as per your requirements
+        alert_message = "Botnet Traffic Detected!\n\n"
+        alert_message += "Severity Level: High\n"
+        alert_message += "Packet Summary: {}\n".format(packet.summary())
+        alert_message += "Recommended Action: Block the IP address\n"
+        return alert_message
 
 def detect_botnet_traffic(packet, botnet_signatures):
     """Detect botnet traffic based on signatures"""
