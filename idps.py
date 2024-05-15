@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 # Sample whitelist of trusted IP addresses
 whitelist = [
     '192.168.0.1',
-    '10.0.0.1',
+    '',
     # Add more trusted IP addresses as needed
 ]
 
