@@ -14,8 +14,7 @@
 ```
 # Botnet Detection System
 
-### THE MORE LOVE THIS PROJECT GETS THE BETTER I WILL MAKE IT. <--- If people are into this idea and concept please share/star. If I see enough results I will continue pushing this into a truly rich and sophisticated python IDPS free for the world!
-### This project and most of my projects are all made/created out of ACTUAL educational purposes/research purposes, I hope you all enjoy! :D
+## This started out a simple detection system and I have recently integrated some features into it via Python to make it a bit more "SOPHISTICATED, PROFESSIONAL, and WORTHWHILE" for the moment.
 
 ## Overview
 This Python script provides a sophisticated botnet detection system that leverages signature-based detection, machine learning algorithms, behavioral analysis, and traffic profiling to identify potential botnet activity in real-time. It also includes advanced alerting capabilities and integration with IP reputation services and SIEM for enhanced threat detection and centralized monitoring.
@@ -56,4 +55,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 # CONTRIBUTORS WELCOME! HELP US MAKE THIS BOTNET DETECTION SYSTEM EVEN MORE EFFECTIVE AND ROBUST.
 
-# If you find this project useful or interesting, please leave a star ⭐ to support further development.
+# If you find this project useful or interesting, please leave a star ⭐ to support further development. The more star ⭐'s we can get on this I will keep updating or possibly move into something else upon request even if I have to use CHATGPT and debug it 1000000x to figure it out. Thanks to whoever forked this and found it nifty. 20/10 LAD! 
