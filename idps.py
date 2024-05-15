@@ -6,13 +6,6 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-# Sample botnet signatures (regular expressions)
-botnet_signatures = [
-    r'botnet\.com',
-    r'malware\.exe',
-    # Add more signatures as needed
-]
-
 # Sample whitelist of trusted IP addresses
 whitelist = [
     '192.168.0.1',
@@ -21,16 +14,17 @@ whitelist = [
 ]
 
 class RealTimeAnalyzer(threading.Thread):
-    def __init__(self, log_file):
+    def __init__(self, log_file, botnet_signatures):
         threading.Thread.__init__(self)
         self.log_file = log_file
+        self.botnet_signatures = botnet_signatures
 
     def run(self):
         sniff(prn=self.analyze_packet, store=0)
 
     def analyze_packet(self, packet):
         """Analyze network packets in real-time"""
-        if detect_botnet_traffic(packet) and not in_whitelist(packet):
+        if detect_botnet_traffic(packet, self.botnet_signatures) and not in_whitelist(packet):
             self.log_detected_packet(packet)
             self.send_email_alert(packet)
 
@@ -65,7 +59,7 @@ class RealTimeAnalyzer(threading.Thread):
         except Exception as e:
             print("Error sending email alert:", e)
 
-def detect_botnet_traffic(packet):
+def detect_botnet_traffic(packet, botnet_signatures):
     """Detect botnet traffic based on signatures"""
     payload = str(packet.payload) if packet.haslayer(Raw) else ""  # Extract packet payload as string
     for signature in botnet_signatures:
@@ -81,30 +75,28 @@ def in_whitelist(packet):
 
 def analyze_traffic(packet):
     """Analyze network traffic for suspicious patterns"""
-    # Add custom traffic analysis logic here
-    pass
+    # Basic machine learning - random analysis for demonstration
+    if random.random() < 0.1:  # Randomly classify packets as suspicious
+        print("Suspicious traffic detected:", packet.summary())
 
-def generate_network_traffic(num_packets):
-    """Generate random network traffic for testing"""
-    traffic = []
-    for _ in range(num_packets):
-        # Generate random traffic with a 50% chance of containing a botnet signature
-        if random.random() < 0.5:
-            packet = "GET /botnet.com HTTP/1.1"
-        else:
-            packet = "POST /login HTTP/1.1"
-        traffic.append(packet)  # Add the generated packet to the traffic list
-    return traffic  # Return the list of generated traffic packets
-
-# Test with 10 random network packets
-test_traffic = generate_network_traffic(10)
-print("Generated Network Traffic:")
-for packet in test_traffic:
-    print(packet)
+def update_botnet_signatures():
+    """Update botnet signatures dynamically"""
+    # Implement logic to fetch and update signatures from external source or database
+    updated_signatures = [
+        r'new_signature1\.com',
+        r'new_signature2\.exe',
+        # Add more signatures
+    ]
+    return updated_signatures
 
 # Start real-time analysis in a separate thread and log detected botnet traffic
 log_file = "botnet_detection_log.txt"
-analyzer_thread = RealTimeAnalyzer(log_file)
+initial_signatures = [
+    r'botnet\.com',
+    r'malware\.exe',
+    # Add more initial signatures as needed
+]
+analyzer_thread = RealTimeAnalyzer(log_file, initial_signatures)
 analyzer_thread.start()
 
 # Sniff network traffic and analyze for suspicious patterns
