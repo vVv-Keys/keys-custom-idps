@@ -55,4 +55,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 # CONTRIBUTORS WELCOME! HELP US MAKE THIS BOTNET DETECTION SYSTEM EVEN MORE EFFECTIVE AND ROBUST.
 
-# If you find this project useful or interesting, please leave a star ⭐ to support further development. The more star ⭐'s we can get on this I will keep updating or possibly move into something else upon request even if I have to use CHATGPT and debug it 1000000x to figure it out. Thanks to whoever forked this and found it nifty. 20/10 LAD! 
+# If you find this project useful or interesting, please leave a star ⭐ to support further development to make this script more sophisticated and worthwhile. 
