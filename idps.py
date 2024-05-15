@@ -6,6 +6,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import matplotlib.pyplot as plt
+import time  # Import the time module for periodic updates
 
 # Sample whitelist of trusted IP addresses
 whitelist = [
@@ -24,6 +25,12 @@ class RealTimeAnalyzer(threading.Thread):
         self.siem_integration = SIEMIntegration()  # Initialize SIEM integration
 
     def run(self):
+        # Start a separate thread to periodically update botnet signatures
+        updater_thread = threading.Thread(target=self.update_botnet_signatures_periodically)
+        updater_thread.daemon = True  # Daemonize the thread to stop when the main thread exits
+        updater_thread.start()
+
+        # Start sniffing network traffic
         sniff(prn=self.analyze_packet, store=0)
 
     def analyze_packet(self, packet):
@@ -75,6 +82,16 @@ class RealTimeAnalyzer(threading.Thread):
         alert_message += "Packet Summary: {}\n".format(packet.summary())
         alert_message += "Recommended Action: Block the IP address\n"
         return alert_message
+
+    def update_botnet_signatures_periodically(self):
+        """Periodically update botnet signatures from an external source"""
+        while True:
+            # Update botnet signatures every 24 hours (86400 seconds)
+            time.sleep(86400)
+            updated_signatures = update_botnet_signatures()
+            if updated_signatures:
+                self.botnet_signatures = updated_signatures
+                print("Botnet signatures updated successfully!")
 
 class SIEMIntegration:
     def __init__(self):
