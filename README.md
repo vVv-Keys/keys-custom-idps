@@ -22,6 +22,8 @@ This Python script provides a sophisticated botnet detection system that leverag
 - IP reputation services integration: Integrates with IP reputation services to assess the reputation of IP addresses and block traffic from known malicious sources.
 - Advanced alerting: Enhances email alerts with detailed information, including severity levels, packet analysis summaries, and recommended actions.
 - SIEM integration: Integrates with a Security Information and Event Management (SIEM) system for centralized monitoring and better incident response capabilities.
+- Multi-threaded processing: Optimizes packet processing by performing real-time analysis in a separate thread to handle large volumes of traffic more efficiently.
+- Traffic visualization: Visualizes traffic profiling using matplotlib to provide insights into network activity, making it easier to identify patterns and anomalies visually.
 
 ## Dependencies
 - Python 3.x
