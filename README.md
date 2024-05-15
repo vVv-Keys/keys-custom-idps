@@ -14,6 +14,8 @@
 ```
 # Botnet Detection System
 
+### THE MORE LOVE THIS PROJECT GETS THE BETTER I WILL MAKE IT. <--- If people are into this idea and concept please share/star. If I see enough results I will continue building and making it more complex and rich with security features such as LLM's etc. 
+
 ## Overview
 This Python script provides a sophisticated botnet detection system that leverages signature-based detection, machine learning algorithms, behavioral analysis, and traffic profiling to identify potential botnet activity in real-time. It also includes advanced alerting capabilities and integration with IP reputation services and SIEM for enhanced threat detection and centralized monitoring.
 
@@ -27,6 +29,7 @@ This Python script provides a sophisticated botnet detection system that leverag
 - SIEM integration: Integrates with a Security Information and Event Management (SIEM) system for centralized monitoring and better incident response capabilities.
 - Multi-threaded processing: Optimizes packet processing by performing real-time analysis in a separate thread to handle large volumes of traffic more efficiently.
 - Traffic visualization: Visualizes traffic profiling using matplotlib to provide insights into network activity, making it easier to identify patterns and anomalies visually.
+- Dynamic signature updates: Periodically updates botnet signatures from an external source to ensure the detection system remains up-to-date with the latest threats.
 
 ## Dependencies
 - Python 3.x
