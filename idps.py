@@ -18,6 +18,7 @@ class RealTimeAnalyzer(threading.Thread):
         threading.Thread.__init__(self)
         self.log_file = log_file
         self.botnet_signatures = botnet_signatures
+        self.traffic_profile = {}  # Initialize empty dictionary for traffic profiling
 
     def run(self):
         sniff(prn=self.analyze_packet, store=0)
@@ -28,6 +29,7 @@ class RealTimeAnalyzer(threading.Thread):
             self.log_detected_packet(packet)
             self.send_email_alert(packet)
         analyze_behavior(packet)
+        update_traffic_profile(packet)
 
     def log_detected_packet(self, packet):
         """Log detected botnet packet to file"""
@@ -96,6 +98,18 @@ def analyze_behavior(packet):
     # For demonstration, let's randomly flag packets as suspicious
     if random.random() < 0.05:  # 5% chance of flagging a packet as suspicious
         print("Suspicious behavior detected:", packet.summary())
+
+def update_traffic_profile(packet):
+    """Update traffic profile with packet information"""
+    # Update traffic profile with packet attributes (e.g., source IP, destination IP, protocol)
+    src_ip = packet[IP].src
+    dst_ip = packet[IP].dst
+    protocol = packet[IP].proto  # Assuming IPv4
+    # Increment traffic count for the corresponding attributes in the traffic profile
+    if (src_ip, dst_ip, protocol) in analyzer_thread.traffic_profile:
+        analyzer_thread.traffic_profile[(src_ip, dst_ip, protocol)] += 1
+    else:
+        analyzer_thread.traffic_profile[(src_ip, dst_ip, protocol)] = 1
 
 # Start real-time analysis in a separate thread and log detected botnet traffic
 log_file = "botnet_detection_log.txt"
