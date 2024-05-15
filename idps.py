@@ -21,6 +21,7 @@ class RealTimeAnalyzer(threading.Thread):
         self.botnet_signatures = botnet_signatures
         self.traffic_profile = {}  # Initialize empty dictionary for traffic profiling
         self.ip_reputation_service = {}  # Initialize empty dictionary for IP reputation service
+        self.siem_integration = SIEMIntegration()  # Initialize SIEM integration
 
     def run(self):
         sniff(prn=self.analyze_packet, store=0)
@@ -30,6 +31,7 @@ class RealTimeAnalyzer(threading.Thread):
         if detect_botnet_traffic(packet, self.botnet_signatures) and not in_whitelist(packet) and not is_malicious_ip(packet):
             self.log_detected_packet(packet)
             self.send_email_alert(packet)
+            self.siem_integration.send_to_siem(packet)  # Send packet data to SIEM for centralized monitoring
         analyze_behavior(packet)
         update_traffic_profile(packet)
         visualize_traffic_profile()
@@ -73,6 +75,19 @@ class RealTimeAnalyzer(threading.Thread):
         alert_message += "Packet Summary: {}\n".format(packet.summary())
         alert_message += "Recommended Action: Block the IP address\n"
         return alert_message
+
+class SIEMIntegration:
+    def __init__(self):
+        # Initialize SIEM connection settings
+        self.siem_address = "siem_address"
+        self.siem_port = 1234
+        # Additional SIEM settings and authentication can be added here
+
+    def send_to_siem(self, packet):
+        """Send packet data to SIEM for centralized monitoring"""
+        # Placeholder logic to send packet data to SIEM
+        print("Sending packet data to SIEM:", packet.summary())
+        # Actual implementation would involve sending data to SIEM using appropriate protocol and format
 
 def detect_botnet_traffic(packet, botnet_signatures):
     """Detect botnet traffic based on signatures"""
