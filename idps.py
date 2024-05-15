@@ -19,13 +19,14 @@ class RealTimeAnalyzer(threading.Thread):
         self.log_file = log_file
         self.botnet_signatures = botnet_signatures
         self.traffic_profile = {}  # Initialize empty dictionary for traffic profiling
+        self.ip_reputation_service = {}  # Initialize empty dictionary for IP reputation service
 
     def run(self):
         sniff(prn=self.analyze_packet, store=0)
 
     def analyze_packet(self, packet):
         """Analyze network packets in real-time"""
-        if detect_botnet_traffic(packet, self.botnet_signatures) and not in_whitelist(packet):
+        if detect_botnet_traffic(packet, self.botnet_signatures) and not in_whitelist(packet) and not is_malicious_ip(packet):
             self.log_detected_packet(packet)
             self.send_email_alert(packet)
         analyze_behavior(packet)
@@ -110,6 +111,12 @@ def update_traffic_profile(packet):
         analyzer_thread.traffic_profile[(src_ip, dst_ip, protocol)] += 1
     else:
         analyzer_thread.traffic_profile[(src_ip, dst_ip, protocol)] = 1
+
+def is_malicious_ip(packet):
+    """Check if the source or destination IP address is in the malicious IP reputation service"""
+    src_ip = packet[IP].src
+    dst_ip = packet[IP].dst
+    return src_ip in analyzer_thread.ip_reputation_service or dst_ip in analyzer_thread.ip_reputation_service
 
 # Start real-time analysis in a separate thread and log detected botnet traffic
 log_file = "botnet_detection_log.txt"
