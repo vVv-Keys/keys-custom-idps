@@ -69,7 +69,7 @@ class RealTimeAnalyzer(threading.Thread):
 
     def generate_alert_message(self, packet):
         """Generate detailed alert message"""
-        # You can customize this message format as per your requirements
+        # Customize alert message with severity level, packet summary, and recommended action
         alert_message = "Botnet Traffic Detected!\n\n"
         alert_message += "Severity Level: High\n"
         alert_message += "Packet Summary: {}\n".format(packet.summary())
