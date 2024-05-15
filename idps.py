@@ -5,11 +5,12 @@ import threading
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import matplotlib.pyplot as plt
 
 # Sample whitelist of trusted IP addresses
 whitelist = [
     '192.168.0.1',
-    '',
+    '10.0.0.1',
     # Add more trusted IP addresses as needed
 ]
 
@@ -31,6 +32,7 @@ class RealTimeAnalyzer(threading.Thread):
             self.send_email_alert(packet)
         analyze_behavior(packet)
         update_traffic_profile(packet)
+        visualize_traffic_profile()
 
     def log_detected_packet(self, packet):
         """Log detected botnet packet to file"""
@@ -117,6 +119,22 @@ def is_malicious_ip(packet):
     src_ip = packet[IP].src
     dst_ip = packet[IP].dst
     return src_ip in analyzer_thread.ip_reputation_service or dst_ip in analyzer_thread.ip_reputation_service
+
+def visualize_traffic_profile():
+    """Visualize traffic profile"""
+    traffic_data = analyzer_thread.traffic_profile
+    if traffic_data:
+        labels = ['{} -> {}'.format(src_ip, dst_ip) for (src_ip, dst_ip, _) in traffic_data.keys()]
+        values = list(traffic_data.values())
+
+        plt.figure(figsize=(10, 6))
+        plt.bar(labels, values, color='skyblue')
+        plt.xlabel('Traffic Flow')
+        plt.ylabel('Packet Count')
+        plt.title('Traffic Profile')
+        plt.xticks(rotation=45, ha='right')
+        plt.tight_layout()
+        plt.show()
 
 # Start real-time analysis in a separate thread and log detected botnet traffic
 log_file = "botnet_detection_log.txt"
