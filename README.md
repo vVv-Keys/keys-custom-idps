@@ -42,3 +42,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - This script was created for educational purposes to demonstrate botnet detection techniques.
 - Special thanks to the Scapy development team for providing the powerful network packet manipulation capabilities.
 
+# WILL BE UPDATING ADDITIONAL FEATURES IN TIME FOR THIS PROJECT ALSO - STAY TUNED! 
+
+# FEEL FREE TO CONTRIBUTE OR FORK. IF YOU FIND THIS INTERESTING LEAVE ME A * SO I CAN GET FAMOUS AND MAYBE NO LONGER HAVE TO FRY FISH IN MY DRYER FOR DINNER :D 
+
