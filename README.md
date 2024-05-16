@@ -14,8 +14,7 @@
 ```
 # Botnet Detection System
 
-## This started out a simple detection system and I have recently integrated some features into it via Python to make it a bit more "SOPHISTICATED, PROFESSIONAL, and WORTHWHILE" for the moment.
-
+## This started out a simple detection system has grown into a nuice little real-time-IDPS involving some complexityu and uniqueness.
 ## Overview
 This Python script provides a sophisticated botnet detection system that leverages signature-based detection, machine learning algorithms, behavioral analysis, and traffic profiling to identify potential botnet activity in real-time. It also includes advanced alerting capabilities and integration with IP reputation services and SIEM for enhanced threat detection and centralized monitoring.
 
