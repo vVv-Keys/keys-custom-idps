@@ -52,4 +52,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 # CONTRIBUTORS WELCOME! HELP US MAKE THIS BOTNET DETECTION SYSTEM EVEN MORE EFFECTIVE AND ROBUST.
 
-# If you find this project useful or interesting, please leave a star ⭐ to support further development to make this script more sophisticated and worthwhile. 
+# If you find this project useful or interesting, please leave a star ⭐ to support further development to make this script more sophisticated and worthwhile.... 
