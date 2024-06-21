@@ -6,54 +6,61 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import matplotlib.pyplot as plt
-import time  # Import the time module for periodic updates
+import time
+import logging
+import json  # For configuration management
+
+# Load configuration from a file
+with open('config.json', 'r') as f:
+    config = json.load(f)
+
+# Set up logging
+logging.basicConfig(filename='analyzer.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Sample whitelist of trusted IP addresses
-whitelist = [
-    '192.168.0.1/16',
-    '10.0.0.1/8',
-    # Add more trusted IP addresses as needed
-]
+whitelist = config["whitelist"]
 
 class RealTimeAnalyzer(threading.Thread):
     def __init__(self, log_file, botnet_signatures):
         threading.Thread.__init__(self)
         self.log_file = log_file
         self.botnet_signatures = botnet_signatures
-        self.traffic_profile = {}  # Initialize empty dictionary for traffic profiling
-        self.ip_reputation_service = set()  # Initialize empty set for IP reputation service
-        self.siem_integration = SIEMIntegration()  # Initialize SIEM integration
+        self.traffic_profile = {}
+        self.ip_reputation_service = set()
+        self.siem_integration = SIEMIntegration()
 
     def run(self):
-        # Start a separate thread to periodically update botnet signatures
         updater_thread = threading.Thread(target=self.update_botnet_signatures_periodically)
-        updater_thread.daemon = True  # Daemonize the thread to stop when the main thread exits
+        updater_thread.daemon = True
         updater_thread.start()
 
-        # Start sniffing network traffic
         sniff(prn=self.analyze_packet, store=0)
 
     def analyze_packet(self, packet):
-        """Analyze network packets in real-time"""
-        if detect_botnet_traffic(packet, self.botnet_signatures) and not in_whitelist(packet) and not is_malicious_ip(packet):
-            self.log_detected_packet(packet)
-            self.send_email_alert(packet)
-            self.siem_integration.send_to_siem(packet)  # Send packet data to SIEM for centralized monitoring
-        analyze_behavior(packet)
-        update_traffic_profile(packet)
-        visualize_traffic_profile()
+        try:
+            if detect_botnet_traffic(packet, self.botnet_signatures) and not in_whitelist(packet) and not is_malicious_ip(packet):
+                self.log_detected_packet(packet)
+                self.send_email_alert(packet)
+                self.siem_integration.send_to_siem(packet)
+            analyze_behavior(packet)
+            update_traffic_profile(packet)
+            visualize_traffic_profile()
+        except Exception as e:
+            logging.error(f"Error analyzing packet: {e}")
 
     def log_detected_packet(self, packet):
-        """Log detected botnet packet to file"""
-        with open(self.log_file, 'a') as f:
-            f.write("Detected Botnet Traffic:\n")
-            f.write(str(packet) + "\n\n")  # Write packet details to log file
+        try:
+            with open(self.log_file, 'a') as f:
+                f.write("Detected Botnet Traffic:\n")
+                f.write(str(packet) + "\n\n")
+            logging.info(f"Logged detected packet: {packet.summary()}")
+        except Exception as e:
+            logging.error(f"Error logging packet: {e}")
 
     def send_email_alert(self, packet):
-        """Send email alert for detected botnet traffic"""
-        sender_email = "your_email@gmail.com"  # Sender's email address
-        receiver_email = "recipient_email@gmail.com"  # Receiver's email address
-        password = "your_password"  # Sender's email password
+        sender_email = config["email"]["sender"]
+        receiver_email = config["email"]["receiver"]
+        password = config["email"]["password"]
 
         message = MIMEMultipart()
         message['From'] = sender_email
@@ -64,108 +71,83 @@ class RealTimeAnalyzer(threading.Thread):
         message.attach(MIMEText(body, 'plain'))
 
         try:
-            server = smtplib.SMTP('smtp.gmail.com', 587)
-            server.starttls()
-            server.login(sender_email, password)
-            text = message.as_string()
-            server.sendmail(sender_email, receiver_email, text)
-            server.quit()
-            print("Email alert sent successfully!")
+            with smtplib.SMTP('smtp.gmail.com', 587) as server:
+                server.starttls()
+                server.login(sender_email, password)
+                server.sendmail(sender_email, receiver_email, message.as_string())
+            logging.info("Email alert sent successfully!")
         except Exception as e:
-            print("Error sending email alert:", e)
+            logging.error(f"Error sending email alert: {e}")
 
     def generate_alert_message(self, packet):
-        """Generate detailed alert message"""
-        # Customize alert message with severity level, packet summary, and recommended action
         alert_message = "Botnet Traffic Detected!\n\n"
         alert_message += "Severity Level: High\n"
-        alert_message += "Packet Summary: {}\n".format(packet.summary())
+        alert_message += f"Packet Summary: {packet.summary()}\n"
         alert_message += "Recommended Action: Block the IP address\n"
         return alert_message
 
     def update_botnet_signatures_periodically(self):
-        """Periodically update botnet signatures from an external source"""
         while True:
-            # Update botnet signatures every 24 hours (86400 seconds)
             time.sleep(86400)
             updated_signatures = update_botnet_signatures()
             if updated_signatures:
                 self.botnet_signatures = updated_signatures
-                print("Botnet signatures updated successfully!")
+                logging.info("Botnet signatures updated successfully!")
 
 class SIEMIntegration:
     def __init__(self):
-        # Initialize SIEM connection settings
-        self.siem_address = "siem_address"
-        self.siem_port = 1234
-        # Additional SIEM settings and authentication can be added here
+        self.siem_address = config["siem"]["address"]
+        self.siem_port = config["siem"]["port"]
 
     def send_to_siem(self, packet):
-        """Send packet data to SIEM for centralized monitoring"""
-        # Placeholder logic to send packet data to SIEM
-        print("Sending packet data to SIEM:", packet.summary())
-        # Actual implementation would involve sending data to SIEM using appropriate protocol and format
+        logging.info(f"Sending packet data to SIEM: {packet.summary()}")
 
 def detect_botnet_traffic(packet, botnet_signatures):
-    """Detect botnet traffic based on signatures"""
-    payload = str(packet.payload) if packet.haslayer(Raw) else ""  # Extract packet payload as string
+    payload = str(packet.payload) if packet.haslayer(Raw) else ""
     for signature in botnet_signatures:
         if re.search(signature, payload):
-            return True  # Return True if a signature is found in the payload
-    return False  # Return False if no signatures are found
+            return True
+    return False
 
 def in_whitelist(packet):
-    """Check if packet source or destination IP is in the whitelist"""
     src_ip = packet[IP].src
     dst_ip = packet[IP].dst
     return src_ip in whitelist or dst_ip in whitelist
 
 def analyze_traffic(packet):
-    """Analyze network traffic for suspicious patterns"""
-    # Basic machine learning - random analysis for demonstration
-    if random.random() < 0.1:  # Randomly classify packets as suspicious
-        print("Suspicious traffic detected:", packet.summary())
+    if random.random() < 0.1:
+        logging.warning(f"Suspicious traffic detected: {packet.summary()}")
 
 def update_botnet_signatures():
-    """Update botnet signatures dynamically"""
-    # Placeholder logic to fetch and update signatures from an external source or database
     updated_signatures = [
         r'new_signature1\.com',
         r'new_signature2\.exe',
-        # Add more signatures
     ]
     return updated_signatures
 
 def analyze_behavior(packet):
-    """Analyze network behavior for suspicious patterns"""
-    # Implement behavioral analysis logic here
-    # For demonstration, let's randomly flag packets as suspicious
-    if random.random() < 0.05:  # 5% chance of flagging a packet as suspicious
-        print("Suspicious behavior detected:", packet.summary())
+    if random.random() < 0.05:
+        logging.warning(f"Suspicious behavior detected: {packet.summary()}")
 
 def update_traffic_profile(packet):
-    """Update traffic profile with packet information"""
-    # Update traffic profile with packet attributes (e.g., source IP, destination IP, protocol)
     src_ip = packet[IP].src
     dst_ip = packet[IP].dst
-    protocol = packet[IP].proto  # Assuming IPv4
-    # Increment traffic count for the corresponding attributes in the traffic profile
-    if (src_ip, dst_ip, protocol) in analyzer_thread.traffic_profile:
-        analyzer_thread.traffic_profile[(src_ip, dst_ip, protocol)] += 1
+    protocol = packet[IP].proto
+    key = (src_ip, dst_ip, protocol)
+    if key in analyzer_thread.traffic_profile:
+        analyzer_thread.traffic_profile[key] += 1
     else:
-        analyzer_thread.traffic_profile[(src_ip, dst_ip, protocol)] = 1
+        analyzer_thread.traffic_profile[key] = 1
 
 def is_malicious_ip(packet):
-    """Check if the source or destination IP address is in the malicious IP reputation service"""
     src_ip = packet[IP].src
     dst_ip = packet[IP].dst
     return src_ip in analyzer_thread.ip_reputation_service or dst_ip in analyzer_thread.ip_reputation_service
 
 def visualize_traffic_profile():
-    """Visualize traffic profile"""
     traffic_data = analyzer_thread.traffic_profile
     if traffic_data:
-        labels = ['{} -> {}'.format(src_ip, dst_ip) for (src_ip, dst_ip, _) in traffic_data.keys()]
+        labels = [f'{src_ip} -> {dst_ip}' for (src_ip, dst_ip, _) in traffic_data.keys()]
         values = list(traffic_data.values())
 
         plt.figure(figsize=(10, 6))
@@ -178,12 +160,8 @@ def visualize_traffic_profile():
         plt.show()
 
 # Start real-time analysis in a separate thread and log detected botnet traffic
-log_file = "botnet_detection_log.txt"
-initial_signatures = [
-    r'botnet\.com',
-    r'malware\.exe',
-    # Add more initial signatures as needed
-]
+log_file = config["log_file"]
+initial_signatures = config["initial_signatures"]
 analyzer_thread = RealTimeAnalyzer(log_file, initial_signatures)
 analyzer_thread.start()
 
