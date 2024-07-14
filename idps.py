@@ -8,14 +8,35 @@ from email.mime.text import MIMEText
 import matplotlib.pyplot as plt
 import time
 import logging
-import json  # For configuration management
+import json
+import base64  # For encoding/decoding email password
 
-# Load configuration from a file
-with open('config.json', 'r') as f:
-    config = json.load(f)
+# Load configuration from a file with error handling
+try:
+    with open('config.json', 'r') as f:
+        config = json.load(f)
+except Exception as e:
+    logging.error(f"Error loading configuration: {e}")
+    config = {
+        "whitelist": ["127.0.0.1"],
+        "email": {
+            "sender": "default@example.com",
+            "receiver": "default@example.com",
+            "password": base64.b64encode(b"defaultpassword").decode('utf-8')
+        },
+        "siem": {
+            "address": "127.0.0.1",
+            "port": 514
+        },
+        "log_file": "analyzer.log",
+        "initial_signatures": [
+            r'signature1\.exe',
+            r'signature2\.com'
+        ]
+    }
 
 # Set up logging
-logging.basicConfig(filename='analyzer.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename=config["log_file"], level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Sample whitelist of trusted IP addresses
 whitelist = config["whitelist"]
@@ -60,7 +81,7 @@ class RealTimeAnalyzer(threading.Thread):
     def send_email_alert(self, packet):
         sender_email = config["email"]["sender"]
         receiver_email = config["email"]["receiver"]
-        password = config["email"]["password"]
+        password = base64.b64decode(config["email"]["password"]).decode('utf-8')
 
         message = MIMEMultipart()
         message['From'] = sender_email
